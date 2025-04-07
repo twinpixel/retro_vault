@@ -1,0 +1,98 @@
+{
+  "categories": [
+    { "name": "Hardware" },
+    { "name": "Publications" },
+    { "name": "Software" }
+  ],
+  "subcategories": [
+    { "name": "Computer", "categoryId": "hardware" },
+    { "name": "Peripherals", "categoryId": "hardware" },
+    { "name": "Books", "categoryId": "publications" },
+    { "name": "Magazines", "categoryId": "publications" },
+    { "name": "Operating Systems", "categoryId": "software" },
+    { "name": "Applications", "categoryId": "software" }
+  ],
+  "acquisitions": [
+    {
+      "acquisitionDate": "2024-01-15",
+      "sourceOfAcquisition": "Donation",
+      "lotDescription": "Collection of vintage computers",
+      "acquisitionNotes": "From the estate of...",
+      "conditionUponArrival": "Mixed",
+      "appraisalInformation": "Pending"
+    },
+    {
+      "acquisitionDate": "2024-03-20",
+      "sourceOfAcquisition": "Purchase",
+      "lotDescription": "Rare technical books",
+      "acquisitionNotes": "Purchased from...",
+      "conditionUponArrival": "Good",
+      "appraisalInformation": "$2500"
+    }
+  ],
+  "objects": [
+    {
+      "nameTitle": "Apple Macintosh 128K",
+      "category": "Hardware",
+      "subcategory": "Computer",
+      "description": "The first Macintosh personal computer.",
+      "manufacturerAuthor": "Apple",
+      "modelSerialNumberISBN": "M0001",
+      "dateOfProductionPublication": "1984-01-24",
+      "condition": "Good",
+      "currentLocation": "Storage Room A",
+      "notesObservations": "Original packaging included",
+      "imagesMultimediaFiles": ["mac128k.jpg"],
+      "acquisitionId": "acquisition_1"
+    },
+    {
+      "nameTitle": "IBM PC 5150",
+      "category": "Hardware",
+      "subcategory": "Computer",
+      "description": "The original IBM Personal Computer.",
+      "manufacturerAuthor": "IBM",
+      "modelSerialNumberISBN": "5150",
+      "dateOfProductionPublication": "1981-08-12",
+      "condition": "Fair",
+      "currentLocation": "Display Case 3",
+      "notesObservations": "Missing keyboard",
+      "imagesMultimediaFiles": ["ibm5150.jpg"],
+      "acquisitionId": "acquisition_1"
+    },
+    {
+      "nameTitle": "BYTE Magazine - November 1979",
+      "category": "Publications",
+      "subcategory": "Magazines",
+      "description": "Early issue of BYTE magazine.",
+      "manufacturerAuthor": "McGraw-Hill",
+      "modelSerialNumberISBN": null,
+      "dateOfProductionPublication": "1979-11-01",
+      "condition": "Good",
+      "currentLocation": "Archives",
+      "notesObservations": "Features an article on...",
+      "imagesMultimediaFiles": [],
+      "acquisitionId": "acquisition_2"
+    },
+    {
+      "nameTitle": "MS-DOS 1.0",
+      "category": "Software",
+      "subcategory": "Operating Systems",
+      "description": "The first version of Microsoft Disk Operating System.",
+      "manufacturerAuthor": "Microsoft",
+      "modelSerialNumberISBN": null,
+      "dateOfProductionPublication": "1981-08-01",
+      "condition": "N/A",
+      "currentLocation": "Digital Archive",
+      "notesObservations": "On 5.25 inch floppy disk",
+      "imagesMultimediaFiles": [],
+      "acquisitionId": "acquisition_1"
+    }
+  ],
+  "exhibitGroupings": [
+    {
+      "name": "The Dawn of the PC",
+      "description": "An exhibit showcasing early personal computers.",
+      "objectIds": ["object_1", "object_2"]
+    }
+  ]
+}

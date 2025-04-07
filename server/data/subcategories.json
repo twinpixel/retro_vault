@@ -1,0 +1,32 @@
+[
+  {
+    "subcategoryId": "b1a0f9a3-64ed-4e82-96af-6ae2b3d38b25",
+    "name": "Computer",
+    "categoryId": "ee201daa-f316-4883-91ed-c5a31c73c3a1"
+  },
+  {
+    "subcategoryId": "d505f4f1-59a8-4b85-bff1-6671ed4e679c",
+    "name": "Peripherals",
+    "categoryId": "ee201daa-f316-4883-91ed-c5a31c73c3a1"
+  },
+  {
+    "subcategoryId": "a08d30fd-b74b-4d75-95fe-6b42a04308c1",
+    "name": "Books",
+    "categoryId": "6a74e9fa-b51d-4b8b-b7c2-3628d5c18dba"
+  },
+  {
+    "subcategoryId": "64b3f4d6-407f-4621-b5a4-99984baa1d38",
+    "name": "Magazines",
+    "categoryId": "6a74e9fa-b51d-4b8b-b7c2-3628d5c18dba"
+  },
+  {
+    "subcategoryId": "99b28587-9f0e-432e-8903-44a85472c6a2",
+    "name": "Operating Systems",
+    "categoryId": "9bbd3309-2f29-4eab-88e1-5787e3ed1236"
+  },
+  {
+    "subcategoryId": "d28235b1-8a9b-4470-a5ab-b8a6c8924cd0",
+    "name": "Applications",
+    "categoryId": "9bbd3309-2f29-4eab-88e1-5787e3ed1236"
+  }
+]

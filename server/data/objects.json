@@ -1,0 +1,83 @@
+[
+  {
+    "uniqueId": "13da3fc4-3185-45e8-8831-a36d9249fac1",
+    "nameTitle": "Commodore 64",
+    "category": "Hardware",
+    "subcategory": "Computer",
+    "description": "An 8-bit home computer",
+    "manufacturerAuthor": "Commodore",
+    "modelSerialNumberISBN": "C64",
+    "dateOfProductionPublication": "1982",
+    "condition": "Good",
+    "currentLocation": "Storage Room B",
+    "notesObservations": "With original box",
+    "imagesMultimediaFiles": [
+      "c64_image.jpg"
+    ],
+    "acquisitionId": "a1b2c3d4-e5f6-7890-1234-567890abcdef"
+  },
+  {
+    "uniqueId": "301edcce-561f-4802-84d0-98ce42dd931e",
+    "nameTitle": "Apple Macintosh 128K",
+    "category": "Hardware",
+    "subcategory": "Computer",
+    "description": "The first Macintosh personal computer.",
+    "manufacturerAuthor": "Apple",
+    "modelSerialNumberISBN": "M0001",
+    "dateOfProductionPublication": "1984-01-24",
+    "condition": "Good",
+    "currentLocation": "Storage Room A",
+    "notesObservations": "Original packaging included",
+    "imagesMultimediaFiles": [
+      "mac128k.jpg"
+    ],
+    "acquisitionId": "34f9bacd-b3fd-4ca6-b363-02c3547ac437"
+  },
+  {
+    "uniqueId": "4ca97e0f-75ea-4ad4-a333-2bb20fbc6923",
+    "nameTitle": "IBM PC 5150",
+    "category": "Hardware",
+    "subcategory": "Computer",
+    "description": "The original IBM Personal Computer.",
+    "manufacturerAuthor": "IBM",
+    "modelSerialNumberISBN": "5150",
+    "dateOfProductionPublication": "1981-08-12",
+    "condition": "Fair",
+    "currentLocation": "Display Case 3",
+    "notesObservations": "Missing keyboard",
+    "imagesMultimediaFiles": [
+      "ibm5150.jpg"
+    ],
+    "acquisitionId": "34f9bacd-b3fd-4ca6-b363-02c3547ac437"
+  },
+  {
+    "uniqueId": "068ed602-ccb9-4d83-97b5-512df4848fcb",
+    "nameTitle": "BYTE Magazine - November 1979",
+    "category": "Publications",
+    "subcategory": "Magazines",
+    "description": "Early issue of BYTE magazine.",
+    "manufacturerAuthor": "McGraw-Hill",
+    "modelSerialNumberISBN": null,
+    "dateOfProductionPublication": "1979-11-01",
+    "condition": "Good",
+    "currentLocation": "Archives",
+    "notesObservations": "Features an article on...",
+    "imagesMultimediaFiles": [],
+    "acquisitionId": "7f90049c-7b03-45d4-ad11-c864dbf0e6f0"
+  },
+  {
+    "uniqueId": "4e038b65-ad56-4db8-a4c8-4a2b73ef8c89",
+    "nameTitle": "MS-DOS 1.0",
+    "category": "Software",
+    "subcategory": "Operating Systems",
+    "description": "The first version of Microsoft Disk Operating System.",
+    "manufacturerAuthor": "Microsoft",
+    "modelSerialNumberISBN": null,
+    "dateOfProductionPublication": "1981-08-01",
+    "condition": "N/A",
+    "currentLocation": "Digital Archive",
+    "notesObservations": "On 5.25 inch floppy disk",
+    "imagesMultimediaFiles": [],
+    "acquisitionId": "34f9bacd-b3fd-4ca6-b363-02c3547ac437"
+  }
+]

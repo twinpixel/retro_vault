@@ -1,0 +1,20 @@
+[
+  {
+    "acquisitionId": "34f9bacd-b3fd-4ca6-b363-02c3547ac437",
+    "acquisitionDate": "2024-01-15",
+    "sourceOfAcquisition": "Donation",
+    "lotDescription": "Collection of vintage computers",
+    "acquisitionNotes": "From the estate of...",
+    "conditionUponArrival": "Mixed",
+    "appraisalInformation": "Pending"
+  },
+  {
+    "acquisitionId": "7f90049c-7b03-45d4-ad11-c864dbf0e6f0",
+    "acquisitionDate": "2024-03-20",
+    "sourceOfAcquisition": "Purchase",
+    "lotDescription": "Rare technical books",
+    "acquisitionNotes": "Purchased from...",
+    "conditionUponArrival": "Good",
+    "appraisalInformation": "$2500"
+  }
+]
