@@ -1,5 +1,6 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:intl/intl.dart';
 
@@ -205,7 +206,54 @@ class MuseumApp extends StatelessWidget {
     return MaterialApp(
       title: 'Museum Collection',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        colorScheme: ColorScheme.dark(
+          primary: Colors.blueGrey[800]!,
+          secondary: Colors.tealAccent[400]!,
+          surface: Colors.grey[900]!,
+          background: Colors.grey[850]!,
+          onPrimary: Colors.white,
+          onSecondary: Colors.black,
+          onSurface: Colors.white,
+          onBackground: Colors.white,
+        ),
+        scaffoldBackgroundColor: Colors.grey[900],
+        appBarTheme: AppBarTheme(
+          backgroundColor: Colors.blueGrey[900],
+          elevation: 4,
+          titleTextStyle: TextStyle(
+            color: Colors.white,
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
+          iconTheme: IconThemeData(color: Colors.white),
+        ),
+        cardTheme: CardTheme(
+          color: Colors.grey[800],
+          elevation: 2,
+          margin: EdgeInsets.all(8),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+          ),
+        ),
+        floatingActionButtonTheme: FloatingActionButtonThemeData(
+          backgroundColor: Colors.tealAccent[400],
+          foregroundColor: Colors.black,
+        ),
+        bottomNavigationBarTheme: BottomNavigationBarThemeData(
+          backgroundColor: Colors.blueGrey[900],
+          selectedItemColor: Colors.tealAccent[400],
+          unselectedItemColor: Colors.blueGrey[300],
+          elevation: 8,
+        ),
+        inputDecorationTheme: InputDecorationTheme(
+          filled: true,
+          fillColor: Colors.grey[800],
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: BorderSide.none,
+          ),
+          contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        ),
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       home: const HomeScreen(),
@@ -474,137 +522,334 @@ class ObjectsScreen extends StatefulWidget {
 
 class _ObjectsScreenState extends State<ObjectsScreen> {
   final _searchController = TextEditingController();
+  final _scrollController = ScrollController();
   String _searchQuery = '';
   int? _selectedCategoryId;
   int? _selectedSubcategoryId;
+  int _currentPage = 0;
+  final int _itemsPerPage = 20;
+  bool _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(_onScroll);
+  }
 
   @override
   void dispose() {
     _searchController.dispose();
+    _scrollController.dispose();
     super.dispose();
+  }
+
+  void _onScroll() {
+    if (_scrollController.position.pixels ==
+        _scrollController.position.maxScrollExtent) {
+      _loadMoreItems();
+    }
+  }
+
+  void _loadMoreItems() {
+    if (!_isLoading) {
+      setState(() {
+        _isLoading = true;
+        _currentPage++;
+      });
+      // Simulate loading delay
+      Future.delayed(const Duration(milliseconds: 500), () {
+        setState(() => _isLoading = false);
+      });
+    }
+  }
+
+  List<MuseumObject> _filterObjects(List<MuseumObject> allObjects) {
+    var filtered = allObjects;
+
+    // Apply search filter if query exists
+    if (_searchQuery.isNotEmpty) {
+      filtered = filtered.where((obj) {
+        return obj.name.toLowerCase().contains(_searchQuery) ||
+            obj.description.toLowerCase().contains(_searchQuery) ||
+            obj.manufacturerAuthor.toLowerCase().contains(_searchQuery) ||
+            obj.modelSerialIsbn.toLowerCase().contains(_searchQuery);
+      }).toList();
+    }
+
+    // Apply category filter
+    if (_selectedCategoryId != null) {
+      filtered = filtered.where((obj) => obj.categoryId == _selectedCategoryId).toList();
+    }
+
+    // Apply subcategory filter
+    if (_selectedSubcategoryId != null) {
+      filtered = filtered.where((obj) => obj.subcategoryId == _selectedSubcategoryId).toList();
+    }
+
+    return filtered;
   }
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
+        // Search and filter section
         Padding(
           padding: const EdgeInsets.all(8.0),
-          child: TextField(
-            controller: _searchController,
-            decoration: InputDecoration(
-              labelText: 'Search objects',
-              suffixIcon: IconButton(
-                icon: const Icon(Icons.clear),
-                onPressed: () {
-                  _searchController.clear();
-                  setState(() => _searchQuery = '');
-                },
-              ),
-            ),
-            onChanged: (value) => setState(() => _searchQuery = value.toLowerCase()),
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-          child: Row(
+          child: Column(
             children: [
-              Expanded(
-                child: ValueListenableBuilder<Box<Category>>(
-                  valueListenable: Hive.box<Category>('categories').listenable(),
-                  builder: (context, box, _) {
-                    return DropdownButtonFormField<int>(
-                      value: _selectedCategoryId,
-                      decoration: const InputDecoration(labelText: 'Category'),
-                      items: [
-                        const DropdownMenuItem(value: null, child: Text('All Categories')),
-                        ...box.values.map((category) => DropdownMenuItem(
-                          value: category.key as int,
-                          child: Text(category.name),
-                        )).toList(),
-                      ],
-                      onChanged: (value) => setState(() {
-                        _selectedCategoryId = value;
-                        _selectedSubcategoryId = null;
-                      }),
-                    );
-                  },
+              // Search field
+              TextField(
+                controller: _searchController,
+                decoration: InputDecoration(
+                  labelText: 'Search objects',
+                  prefixIcon: const Icon(Icons.search),
+                  suffixIcon: IconButton(
+                    icon: const Icon(Icons.clear),
+                    onPressed: () {
+                      _searchController.clear();
+                      setState(() => _searchQuery = '');
+                    },
+                  ),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
                 ),
+                onChanged: (value) => setState(() => _searchQuery = value.toLowerCase()),
               ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: ValueListenableBuilder<Box<Subcategory>>(
-                  valueListenable: Hive.box<Subcategory>('subcategories').listenable(),
-                  builder: (context, box, _) {
-                    final subcategories = _selectedCategoryId != null
-                        ? box.values.where((sub) => sub.categoryId == _selectedCategoryId).toList()
-                        : box.values.toList();
-                    return DropdownButtonFormField<int>(
-                      value: _selectedSubcategoryId,
-                      decoration: const InputDecoration(labelText: 'Subcategory'),
-                      items: [
-                        const DropdownMenuItem(value: null, child: Text('All Subcategories')),
-                        ...subcategories.map((subcategory) => DropdownMenuItem(
-                          value: subcategory.key as int,
-                          child: Text(subcategory.name),
-                        )).toList(),
-                      ],
-                      onChanged: (value) => setState(() => _selectedSubcategoryId = value),
-                    );
-                  },
-                ),
+              const SizedBox(height: 8),
+
+              // Category and subcategory filters
+              Row(
+                children: [
+                  Expanded(
+                    child: ValueListenableBuilder<Box<Category>>(
+                      valueListenable: Hive.box<Category>('categories').listenable(),
+                      builder: (context, box, _) {
+                        return DropdownButtonFormField<int>(
+                          value: _selectedCategoryId,
+                          decoration: InputDecoration(
+                            labelText: 'Category',
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8.0),
+                            ),
+                            contentPadding: const EdgeInsets.symmetric(horizontal: 12),
+                          ),
+                          items: [
+                            const DropdownMenuItem(value: null, child: Text('All Categories')),
+                            ...box.values.map((category) => DropdownMenuItem(
+                              value: category.key as int,
+                              child: Text(category.name),
+                            )).toList(),
+                          ],
+                          onChanged: (value) => setState(() {
+                            _selectedCategoryId = value;
+                            _selectedSubcategoryId = null;
+                            _currentPage = 0; // Reset pagination when filter changes
+                          }),
+                        );
+                      },
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: ValueListenableBuilder<Box<Subcategory>>(
+                      valueListenable: Hive.box<Subcategory>('subcategories').listenable(),
+                      builder: (context, box, _) {
+                        final subcategories = _selectedCategoryId != null
+                            ? box.values.where((sub) => sub.categoryId == _selectedCategoryId).toList()
+                            : box.values.toList();
+                        return DropdownButtonFormField<int>(
+                          value: _selectedSubcategoryId,
+                          decoration: InputDecoration(
+                            labelText: 'Subcategory',
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8.0),
+                            ),
+                            contentPadding: const EdgeInsets.symmetric(horizontal: 12),
+                          ),
+                          items: [
+                            const DropdownMenuItem(value: null, child: Text('All Subcategories')),
+                            ...subcategories.map((subcategory) => DropdownMenuItem(
+                              value: subcategory.key as int,
+                              child: Text(subcategory.name),
+                            )).toList(),
+                          ],
+                          onChanged: (value) => setState(() {
+                            _selectedSubcategoryId = value;
+                            _currentPage = 0; // Reset pagination when filter changes
+                          }),
+                        );
+                      },
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
         ),
+
+        // Object count indicator
+        ValueListenableBuilder<Box<MuseumObject>>(
+          valueListenable: Hive.box<MuseumObject>('objects').listenable(),
+          builder: (context, box, _) {
+            final filteredObjects = _filterObjects(box.values.toList());
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    '${filteredObjects.length} objects found',
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                  if (filteredObjects.isNotEmpty)
+                    Text(
+                      'Showing ${(_currentPage * _itemsPerPage) + 1}-${min((_currentPage + 1) * _itemsPerPage, filteredObjects.length)}',
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                ],
+              ),
+            );
+          },
+        ),
+
+        // Object list
         Expanded(
           child: ValueListenableBuilder<Box<MuseumObject>>(
             valueListenable: Hive.box<MuseumObject>('objects').listenable(),
             builder: (context, box, _) {
-              var objects = box.values.toList();
+              final allObjects = box.values.toList();
+              final filteredObjects = _filterObjects(allObjects);
+              final paginatedObjects = filteredObjects
+                  .take((_currentPage + 1) * _itemsPerPage)
+                  .toList();
 
-              if (_searchQuery.isNotEmpty) {
-                objects = objects.where((obj) {
-                  return obj.name.toLowerCase().contains(_searchQuery) ||
-                      obj.description.toLowerCase().contains(_searchQuery) ||
-                      obj.manufacturerAuthor.toLowerCase().contains(_searchQuery) ||
-                      obj.modelSerialIsbn.toLowerCase().contains(_searchQuery) ||
-                      obj.notes.toLowerCase().contains(_searchQuery);
-                }).toList();
-              }
-
-              if (_selectedCategoryId != null) {
-                objects = objects.where((obj) => obj.categoryId == _selectedCategoryId).toList();
-              }
-
-              if (_selectedSubcategoryId != null) {
-                objects = objects.where((obj) => obj.subcategoryId == _selectedSubcategoryId).toList();
+              if (filteredObjects.isEmpty) {
+                return Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(Icons.search_off, size: 48),
+                      const SizedBox(height: 16),
+                      Text(
+                        'No objects found',
+                        style: Theme.of(context).textTheme.titleMedium,
+                      ),
+                      if (_searchQuery.isNotEmpty ||
+                          _selectedCategoryId != null ||
+                          _selectedSubcategoryId != null)
+                        TextButton(
+                          onPressed: () {
+                            setState(() {
+                              _searchQuery = '';
+                              _selectedCategoryId = null;
+                              _selectedSubcategoryId = null;
+                              _currentPage = 0;
+                              _searchController.clear();
+                            });
+                          },
+                          child: const Text('Clear filters'),
+                        ),
+                    ],
+                  ),
+                );
               }
 
               return ListView.builder(
-                itemCount: objects.length,
+                controller: _scrollController,
+                itemCount: paginatedObjects.length + (_isLoading ? 1 : 0),
                 itemBuilder: (context, index) {
-                  final obj = objects[index];
+                  if (index >= paginatedObjects.length) {
+                    return const Center(
+                      child: Padding(
+                        padding: EdgeInsets.all(16.0),
+                        child: CircularProgressIndicator(),
+                      ),
+                    );
+                  }
+
+                  final obj = paginatedObjects[index];
                   final category = Hive.box<Category>('categories').get(obj.categoryId);
                   final subcategory = Hive.box<Subcategory>('subcategories').get(obj.subcategoryId);
 
                   return Card(
                     margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                    child: ListTile(
-                      title: Text(obj.name),
-                      subtitle: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('${category?.name} > ${subcategory?.name}'),
-                          Text(obj.manufacturerAuthor),
-                          if (obj.modelSerialIsbn.isNotEmpty) Text(obj.modelSerialIsbn),
-                        ],
-                      ),
-                      trailing: const Icon(Icons.chevron_right),
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(8),
                       onTap: () => Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) => ObjectDetailScreen(objectKey: obj.key as int),
+                        ),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    obj.name,
+                                    style: Theme.of(context).textTheme.titleMedium,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                                if (obj.imagePaths.isNotEmpty)
+                                  const Icon(Icons.image, size: 20),
+                              ],
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              '${category?.name ?? 'Unknown'} > ${subcategory?.name ?? 'Unknown'}',
+                              style: Theme.of(context).textTheme.bodySmall,
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              obj.manufacturerAuthor,
+                              style: Theme.of(context).textTheme.bodyMedium,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            if (obj.modelSerialIsbn.isNotEmpty) ...[
+                              const SizedBox(height: 4),
+                              Text(
+                                obj.modelSerialIsbn,
+                                style: Theme.of(context).textTheme.bodySmall,
+                              ),
+                            ],
+                            const SizedBox(height: 4),
+                            Row(
+                              children: [
+                                Icon(Icons.calendar_today, size: 16,
+                                    color: Theme.of(context).textTheme.bodySmall?.color),
+                                const SizedBox(width: 4),
+                                Text(
+                                  DateFormat('yyyy').format(obj.dateOfProductionPublication),
+                                  style: Theme.of(context).textTheme.bodySmall,
+                                ),
+                                const Spacer(),
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 8, vertical: 2),
+                                  decoration: BoxDecoration(
+                                    color: _getConditionColor(obj.condition),
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  child: Text(
+                                    obj.condition,
+                                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
                         ),
                       ),
                     ),
@@ -614,6 +859,8 @@ class _ObjectsScreenState extends State<ObjectsScreen> {
             },
           ),
         ),
+
+        // Add button
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: FloatingActionButton(
@@ -626,8 +873,25 @@ class _ObjectsScreenState extends State<ObjectsScreen> {
         ),
       ],
     );
-  }}
+  }
 
+  Color _getConditionColor(String condition) {
+    switch (condition.toLowerCase()) {
+      case 'excellent':
+        return Colors.green;
+      case 'good':
+        return Colors.lightGreen;
+      case 'fair':
+        return Colors.orange;
+      case 'poor':
+        return Colors.deepOrange;
+      case 'needs restoration':
+        return Colors.red;
+      default:
+        return Colors.grey;
+    }
+  }
+}
 class ObjectDetailScreen extends StatelessWidget {
   final int objectKey;
 
